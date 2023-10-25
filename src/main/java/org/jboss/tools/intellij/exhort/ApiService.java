@@ -63,10 +63,12 @@ public final class ApiService {
 
         try {
             setRequestProperties();
+            ApiSettingsState.getInstance().setApiOptions();
+            LOG.info("Perform stack analysis");
             var htmlContent = exhortApi.stackAnalysisHtml(manifestPath);
             var tmpFile = Files.createTempFile("exhort_", ".html");
             Files.write(tmpFile, htmlContent.get());
-
+            LOG.info("Finish stack analysis");
             telemetryMsg.send();
             return tmpFile;
 
@@ -87,6 +89,7 @@ public final class ApiService {
         try {
             setRequestProperties();
             CompletableFuture<AnalysisReport> componentReport;
+            LOG.info("Perform component analysis");
             if ("go.mod".equals(manifestName) || "requirements.txt".equals(manifestName)) {
                 var manifestContent = Files.readAllBytes(Paths.get(manifestPath));
                 componentReport = exhortApi.componentAnalysis(manifestName, manifestContent);
@@ -94,6 +97,7 @@ public final class ApiService {
                 componentReport = exhortApi.componentAnalysis(manifestPath);
             }
             AnalysisReport report = componentReport.get();
+            LOG.info("Finish component analysis");
             telemetryMsg.send();
             return report;
         } catch (IOException | InterruptedException | ExecutionException ex) {
