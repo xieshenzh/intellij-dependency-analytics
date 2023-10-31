@@ -43,18 +43,13 @@ public class PipCAAnnotator extends CAAnnotator {
                 Dependency dep = getDependency(child);
 
                 if (dep != null) {
-                    List<PsiElement> eleList = new LinkedList<>();
-                    eleList.add(child);
-
                     while (++i <= children.length) {
                         if (i == children.length) {
-                            resultMap.computeIfAbsent(dep, k -> new LinkedList<>()).addAll(eleList);
+                            resultMap.computeIfAbsent(dep, k -> new LinkedList<>()).add(child);
                             break;
                         }
 
                         PsiElement next = children[i];
-                        eleList.add(next);
-
                         if (next instanceof PsiComment) {
                             PsiComment c = (PsiComment) next;
                             String comment = c.getText().trim();
@@ -66,7 +61,7 @@ public class PipCAAnnotator extends CAAnnotator {
                         } else if (next instanceof LeafPsiElement) {
                             LeafPsiElement ele = (LeafPsiElement) next;
                             if ("RequirementsTokenType.EOL".equals(ele.getElementType().toString())) {
-                                resultMap.computeIfAbsent(dep, k -> new LinkedList<>()).addAll(eleList);
+                                resultMap.computeIfAbsent(dep, k -> new LinkedList<>()).add(child);
                                 break;
                             }
                         }

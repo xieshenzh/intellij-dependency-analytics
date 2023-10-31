@@ -63,7 +63,6 @@ public final class ApiService {
 
         try {
             setRequestProperties();
-            ApiSettingsState.getInstance().setApiOptions();
             LOG.info("Perform stack analysis");
             var htmlContent = exhortApi.stackAnalysisHtml(manifestPath);
             var tmpFile = Files.createTempFile("exhort_", ".html");
